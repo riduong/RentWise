@@ -1,0 +1,71 @@
+<template>
+    <div class="account-page">
+        <!-- Header -->
+        <c-header-component></c-header-component>
+
+        <!-- Main Content -->
+        <div class="slds-p-around_medium">
+            <lightning-card title="My Account" icon-name="standard:user">
+                <!-- User Profile Section -->
+                <div class="slds-p-horizontal_medium">
+                    <div class="slds-grid slds-wrap">
+                        <!-- Profile Info -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-right_medium">
+                            <div class="slds-box slds-box_x-small">
+                                <div class="slds-align_absolute-center slds-m-bottom_medium">
+                                    <lightning-avatar 
+                                        size="large"
+                                        variant="circle"
+                                        src={userProfileImage}
+                                        fallback-icon-name="standard:user">
+                                    </lightning-avatar>
+                                </div>
+                                <div class="slds-form">
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label">Name</label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{userName}</div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label">Email</label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{userEmail}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Saved Properties -->
+                        <div class="slds-col slds-size_2-of-3">
+                            <h2 class="slds-text-heading_medium slds-m-bottom_medium">Saved Properties</h2>
+                            <template if:true={savedProperties.length}>
+                                <div class="slds-grid slds-wrap slds-gutters">
+                                    <template for:each={savedProperties} for:item="property">
+                                        <div key={property.Id} class="slds-col slds-size_1-of-2 slds-p-around_xx-small">
+                                            <c-property-card 
+                                                property={property}
+                                                show-favorite-button="true"
+                                                onfavoritechange={handleFavoriteChange}>
+                                            </c-property-card>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:false={savedProperties.length}>
+                                <div class="slds-text-align_center slds-p-around_medium">
+                                    <p>No saved properties yet.</p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </lightning-card>
+        </div>
+
+        <!-- Footer -->
+        <c-footer-component></c-footer-component>
+        <c-custom-toast></c-custom-toast>
+    </div>
+</template>

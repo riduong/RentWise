@@ -1,0 +1,17 @@
+<template>
+    <header class="header">
+        <div class="logo">RentWise</div>
+        
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/all-listings">All Listings</a>
+            <a href="/account">Account</a>
+            <template if:true={isLoggedIn}>
+                <a href="javascript:void(0);" onclick={handleLogout}>Logout</a>
+            </template>
+            <template if:false={isLoggedIn}>
+                <a href="/login">Login</a>
+            </template>
+        </nav>
+    </header>
+</template>

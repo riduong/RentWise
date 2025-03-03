@@ -1,0 +1,32 @@
+<template>
+    <div class="property-card">
+        <div class="property-content" onclick={navigateToProperty}>
+            <div class="image-container">
+                <c-property-image 
+                    property-id={property.Id}>
+                </c-property-image>
+            </div>
+            <div class="property-info">
+                <div class="info-header">
+                    <h3 class="property-title">{property.Name}</h3>
+                    <template if:true={showFavoriteButton}>
+                        <button 
+                            class={favoriteButtonClass}
+                            onclick={handleFavoriteClick}
+                            title={favoriteButtonTitle}>
+                            <lightning-icon
+                                icon-name="utility:favorite"
+                                size="small"
+                                class={favoriteIconClass}>
+                            </lightning-icon>
+                        </button>
+                    </template>
+                </div>
+                <p class="property-price">{formattedPrice}</p>
+                <p class="property-location">{property.Location_Address__c}</p>
+                <p class="property-details">{property.Bedrooms__c} Bedrooms</p>
+            </div>
+        </div>
+        <c-custom-toast></c-custom-toast>
+    </div>
+</template>

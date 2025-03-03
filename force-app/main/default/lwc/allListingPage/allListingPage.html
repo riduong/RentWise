@@ -1,0 +1,140 @@
+<template>
+    <div class="listing-page">
+        <c-header-component></c-header-component>
+
+        <div class="main-content">
+            <div class="content-header">
+                <button class={filterButtonClass} onclick={toggleFilters}>
+                    <lightning-icon
+                        icon-name="utility:filterList"
+                        size="x-small"
+                        class="slds-m-right_xx-small">
+                    </lightning-icon>
+                    Filters
+                </button>
+
+                <div class="property-count">
+                    {propertyCountText}
+                </div>
+
+                <div class="sort-section">
+                    <lightning-combobox
+                        label="Sort By"
+                        options={sortOptions}
+                        value={filters.sortBy}
+                        onchange={handleSortChange}
+                        class="sort-dropdown">
+                    </lightning-combobox>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <div class={filtersPanelClass}>
+                    <div class="filters-content">
+                        <button class="filters-close-button" onclick={toggleFilters}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 class="slds-text-heading_small slds-m-bottom_medium">Filter Properties</h2>
+                        
+                        <lightning-combobox 
+                            label="Property Type" 
+                            options={propertyTypeOptions}
+                            value={filters.propertyType}
+                            onchange={handleFilterChange} 
+                            data-field="propertyType"
+                            class="slds-m-bottom_small">
+                        </lightning-combobox>
+
+                        <div class="slds-m-bottom_medium">
+                            <div class="slds-m-bottom_small">
+                                <label class="slds-form-element__label">Price Range</label>
+                                <div class="price-display">
+                                    <span>${formattedMinPrice}</span>
+                                    <span>${formattedMaxPrice}</span>
+                                </div>
+                                <lightning-slider 
+                                    min={minPriceValue}
+                                    max={maxPriceValue}
+                                    step={stepValue}
+                                    value={filters.minPrice}
+                                    onchange={handleMinPriceChange}>
+                                </lightning-slider>
+                                <lightning-slider 
+                                    min={minPriceValue}
+                                    max={maxPriceValue}
+                                    step={stepValue}
+                                    value={filters.maxPrice}
+                                    onchange={handleMaxPriceChange}>
+                                </lightning-slider>
+                            </div>
+                        </div>
+
+                        <lightning-combobox 
+                            label="Bedrooms" 
+                            options={bedroomOptions}
+                            value={filters.bedrooms}
+                            onchange={handleFilterChange} 
+                            data-field="bedrooms"
+                            class="slds-m-bottom_small">
+                        </lightning-combobox>
+
+                        <lightning-dual-listbox
+                            label="Other Features"
+                            source-label="Available"
+                            selected-label="Selected"
+                            options={otherFeatureOptions}
+                            value={filters.otherFeatures}
+                            onchange={handleFilterChange}
+                            data-field="otherFeatures">
+                        </lightning-dual-listbox>
+                    </div>
+                </div>
+
+                <div class={mainContentClass}>
+                    <template if:true={isLoading}>
+                        <div class="slds-text-align_center">
+                            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template if:true={hasProperties}>
+                        <div class="property-grid">
+                            <template for:each={displayedProperties} for:item="property">
+                                <div key={property.Id} class="property-grid-item">
+                                    <c-property-card 
+                                        property={property}
+                                        show-favorite-button
+                                        onfavoritechange={handleFavoriteChange}>
+                                    </c-property-card>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="pagination-container">
+                            <template for:each={paginationButtons} for:item="button">
+                                <button 
+                                    key={button.label}
+                                    class="pagination-button"
+                                    disabled={button.disabled}
+                                    data-page={button.value}
+                                    data-active={button.active}
+                                    onclick={handlePageChange}>
+                                    {button.label}
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template if:false={hasProperties}>
+                        <div class="slds-text-align_center slds-p-around_medium">
+                            <p class="slds-text-body_regular">No properties found matching your criteria.</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <c-footer-component></c-footer-component>
+        <c-custom-toast></c-custom-toast>
+    </div>
+</template>

@@ -1,0 +1,88 @@
+<template>
+    <div class="home-layout">
+        <c-header-component></c-header-component>
+
+        <!-- Hero Section with Search -->
+        <div class="hero-section">
+            <h1>Find your dream property</h1>
+            <div class="search-section">
+                <lightning-input
+                    type="text"
+                    placeholder="Enter an address..."
+                    variant="label-hidden"
+                    value={searchAddress}
+                    onchange={handleSearchInput}
+                    onkeypress={handleKeyPress}
+                    class="search-input">
+                </lightning-input>
+                <button onclick={handleSearch} class="search-button" title="Search">
+                    <lightning-icon
+                        icon-name="utility:search"
+                        size="small"
+                        class="search-icon">
+                    </lightning-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <template if:true={searchResults.length}>
+            <div class="search-results">
+                <h2 class="section-header">Search Results</h2>
+                <template if:true={isSearching}>
+                    <div class="slds-is-relative">
+                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                    </div>
+                </template>
+                <div class="property-grid">
+                    <template for:each={searchResults} for:item="property">
+                        <div key={property.Id} class="property-card-wrapper">
+                            <c-property-card 
+                                property={property}
+                                show-favorite-button="true"
+                                onfavoritechange={handleFavoriteChange}>
+                            </c-property-card>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <!-- Featured Listings -->
+        <div class="featured-listings">
+            <h2>Featured Listings</h2>
+            
+            <template if:true={isLoadingFeatured}>
+                <div class="slds-is-relative">
+                    <lightning-spinner alternative-text="Loading featured properties" size="medium"></lightning-spinner>
+                </div>
+            </template>
+        
+            <template if:false={isLoadingFeatured}>
+                <template if:true={featuredListings.length}>
+                    <div class="featured-card">
+                        <div class="featured-content">
+                            <lightning-carousel class="featured-carousel">
+                                <template for:each={featuredListings} for:item="property">
+                                    <lightning-carousel-image
+                                        key={property.Id}
+                                        src={property.Primary_Image__c}
+                                        header={property.Name}
+                                        description={property.daysRentedText}
+                                        alternative-text={property.Name}
+                                        href="javascript:void(0);"
+                                        onclick={handleCarouselImageClick}
+                                        data-id={property.Id}>
+                                    </lightning-carousel-image>
+                                </template>
+                            </lightning-carousel>
+                        </div>
+                    </div>
+                </template>
+            </template>            
+        </div>
+
+        <c-footer-component></c-footer-component>
+        <c-custom-toast></c-custom-toast>
+    </div>
+</template>

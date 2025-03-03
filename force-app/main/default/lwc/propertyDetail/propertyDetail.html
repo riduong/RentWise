@@ -1,0 +1,256 @@
+<template>
+    <div class="property-detail">
+        <!-- Header -->
+        <c-header-component></c-header-component>
+
+        <!-- Main Content -->
+        <div class="slds-p-around_medium">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-is-relative slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error State -->
+            <template if:true={hasError}>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>{error}</h2>
+                </div>
+            </template>
+
+            <!-- Property Details Card -->
+            <template if:true={hasProperty}>
+                <lightning-card>
+                    <div class="slds-p-around_medium">
+                        <div class="slds-grid slds-wrap">
+                            <!-- Left Column: Image Carousel -->
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-p-right_medium">
+                                <div class="property-main-image-container">
+                                    <!-- Image Loading State -->
+                                    <template if:true={isImageLoading}>
+                                        <div class="slds-is-relative">
+                                            <lightning-spinner alternative-text="Loading image" size="medium"></lightning-spinner>
+                                        </div>
+                                    </template>
+                                    
+                                    <!-- Image Carousel -->
+                                    <template if:true={currentImage}>
+                                        <img 
+                                            src={currentImage} 
+                                            alt={property.Name}
+                                            class="property-main-image"
+                                            onload={handleImageLoad}
+                                            onerror={handleImageError}>
+                                        
+                                        <!-- Navigation Arrows (if multiple images) -->
+                                        <template if:true={hasMultipleImages}>
+                                            <div class="image-navigation">
+                                                <button class="nav-button nav-button-prev" 
+                                                        onclick={handlePreviousImage}
+                                                        title="Previous image">
+                                                    <lightning-icon icon-name="utility:chevronleft"
+                                                                  size="small"
+                                                                  variant="inverse">
+                                                    </lightning-icon>
+                                                </button>
+                                                <button class="nav-button nav-button-next" 
+                                                        onclick={handleNextImage}
+                                                        title="Next image">
+                                                    <lightning-icon icon-name="utility:chevronright"
+                                                                  size="small"
+                                                                  variant="inverse">
+                                                    </lightning-icon>
+                                                </button>
+                                            </div>
+                                            <!-- Image Counter -->
+                                            <div class="image-counter">
+                                                {displayImageIndex} / {propertyImages.length}
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Property Information -->
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <!-- Header Information -->
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col">
+                                        <h1 class="slds-text-heading_large slds-truncate">{property.Name}</h1>
+                                        <p class="slds-text-heading_medium slds-m-top_small">{formattedPrice}</p>
+                                        <p class="slds-text-body_regular slds-m-top_small">{property.Location_Address__c}</p>
+                                        <p class="slds-text-body_regular slds-m-top_small">{property.Description__c}</p>
+                                    </div>
+
+                                    <!-- Favorite Button -->
+                                    <div class="slds-col slds-size_2-of-12">
+                                        <button class={favoriteButtonClass}
+                                                onclick={handleFavoriteClick}
+                                                title={favoriteButtonTitle}>
+                                            <lightning-icon icon-name="utility:favorite"
+                                                          size="medium"
+                                                          class={favoriteIconClass}>
+                                            </lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Property Details Grid -->
+                                <div class="slds-m-top_medium">
+                                    <div class="slds-grid slds-gutters">
+                                        <!-- Left Column Details -->
+                                        <div class="slds-col">
+                                            <div class="detail-item">
+                                                <span class="slds-text-title">Bedrooms</span>
+                                                <p class="slds-text-body_regular">{property.Bedrooms__c}</p>
+                                            </div>
+                                            <div class="detail-item slds-m-top_small">
+                                                <span class="slds-text-title">Bathrooms</span>
+                                                <p class="slds-text-body_regular">{property.Bathrooms__c}</p>
+                                            </div>
+                                        </div>
+                                        <!-- Right Column Details -->
+                                        <div class="slds-col">
+                                            <div class="detail-item">
+                                                <span class="slds-text-title">Square Feet</span>
+                                                <p class="slds-text-body_regular">{property.Square_Footage__c}</p>
+                                            </div>
+                                            <div class="detail-item slds-m-top_small">
+                                                <span class="slds-text-title">Property Type</span>
+                                                <p class="slds-text-body_regular">{property.Property_Type__c}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Property Details -->
+                                <template if:true={property.Lot_Size__c}>
+                                    <div class="detail-item slds-m-top_medium">
+                                        <span class="slds-text-title">Lot Size</span>
+                                        <p class="slds-text-body_regular">{property.Lot_Size__c}</p>
+                                    </div>
+                                </template>
+
+                                <!-- Map Section -->
+                                <div class="slds-m-top_large">
+                                    <h2 class="slds-text-heading_medium slds-m-bottom_medium">Location</h2>
+                                    <template if:true={mapLoading}>
+                                        <div class="map-loading-container">
+                                            <lightning-spinner alternative-text="Loading map" size="medium"></lightning-spinner>
+                                        </div>
+                                    </template>
+                                    <template if:true={hasMapMarker}>
+                                        <div class="map-container">
+                                            <lightning-map map-markers={mapMarkers}
+                                                         zoom-level="15"
+                                                         markers-title="Property Location"
+                                                         options={mapOptions}
+                                                         list-view="hidden">
+                                            </lightning-map>
+                                        </div>
+                                    </template>
+                                    <template if:true={mapError}>
+                                        <div class="slds-text-body_regular slds-text-color_error">
+                                            Unable to load map location
+                                        </div>
+                                    </template>
+                                    <template if:false={hasMapMarker}>
+                                        <div class="slds-text-body_regular slds-text-color_weak">
+                                            Map location not available
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Contact Agent Section -->
+                                <div class="slds-m-top_large">
+                                    <button class="contact-agent-button slds-button slds-button_brand"
+                                            onclick={handleContactAgentClick}>
+                                        Contact Agent
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-card>
+            </template>
+        </div>
+
+        <!-- Contact Form Modal -->
+        <template if:true={showContactModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" 
+                     class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal Header -->
+                    <div class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium">Contact Agent</h2>
+                        <button class="slds-button slds-button_icon slds-modal__close" 
+                                onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" 
+                                          size="small" 
+                                          variant="inverse">
+                            </lightning-icon>
+                        </button>
+                    </div>
+                        <!-- Modal Body -->
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <lightning-layout multiple-rows>
+                                <!-- First Name -->
+                                <lightning-layout-item size="12" padding="around-small">
+                                    <lightning-input label="First Name" 
+                                                data-field="firstName"
+                                                value={contactForm.firstName}
+                                                onchange={handleInputChange}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <!-- Last Name -->
+                                <lightning-layout-item size="12" padding="around-small">
+                                    <lightning-input label="Last Name" 
+                                                required
+                                                data-field="lastName"
+                                                value={contactForm.lastName}
+                                                onchange={handleInputChange}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <!-- Email -->
+                                <lightning-layout-item size="12" padding="around-small">
+                                    <lightning-input type="email" 
+                                                label="Email" 
+                                                data-field="email"
+                                                value={contactForm.email}
+                                                onchange={handleInputChange}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <!-- Message -->
+                                <lightning-layout-item size="12" padding="around-small">
+                                    <lightning-textarea label="Message"
+                                                    data-field="message"
+                                                    value={contactForm.message}
+                                                    onchange={handleInputChange}>
+                                    </lightning-textarea>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    <!-- Modal Footer -->
+                    <div class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" 
+                                onclick={closeModal}>
+                            Cancel
+                        </button>
+                        <button class="slds-button slds-button_brand" 
+                                onclick={handleSubmitForm}
+                                disabled={isSubmitting}>
+                            Send Message
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Footer -->
+        <c-footer-component></c-footer-component>
+        <c-custom-toast></c-custom-toast>
+    </div>
+</template>

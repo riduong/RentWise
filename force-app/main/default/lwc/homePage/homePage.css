@@ -1,0 +1,235 @@
+/* Main Layout */
+.home-layout {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+.main-content {
+    flex: 1;
+    width: 100%;
+}
+
+/* Hero Section */
+.hero-section {
+    width: 100%;
+    background-color: #edf2f7;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+}
+
+.hero-section h1 {
+    color: #1a365d;
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.search-section {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    position: relative;
+    border-radius: 8px;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+}
+
+.search-input input {
+    border: 1px solid #e2e8f0 !important;
+    border-right: none !important;
+    border-radius: 8px 0 0 8px !important;
+    height: 48px !important;
+    padding-left: 48px !important;
+    font-size: 1rem !important;
+}
+
+.search-button {
+    width: 48px;
+    height: 32px;
+    background-color: #2c5282;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-left: -6px;
+    position: relative;
+    top: -9px;
+}
+
+.search-button:hover {
+    background-color: #1a365d;
+}
+
+.search-icon {
+    --sds-c-icon-color-foreground: white;
+    --sds-c-icon-color-foreground-default: white;
+}
+
+/* Search Results */
+.search-results {
+    width: 90%;
+    max-width: 300px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.search-results h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a365d;
+    margin-bottom: 1rem;
+}
+
+/* Featured Listings */
+.featured-listings {
+    width: 90%;
+    max-width: 300px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.featured-listings h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a365d;
+    margin-bottom: 1.5rem;
+}
+
+.featured-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin-bottom: 3rem; /* Add space for controls */
+}
+
+.featured-content {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.featured-carousel {
+    width: 100%;
+    height: auto;
+}
+
+/* Carousel content styling */
+.featured-carousel .slds-carousel__panel-action {
+    padding: 0;
+    border: none;
+    height: auto;
+}
+
+.featured-carousel .slds-carousel__image {
+    height: 200px;
+}
+
+.featured-carousel .slds-carousel__content {
+    height: auto;
+    padding: 1rem;
+    background: white;
+    text-align: center;
+}
+
+/* Ensure content is properly spaced */
+.featured-carousel .slds-carousel__panel-header {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.featured-carousel .slds-carousel__panel-description {
+    font-size: 0.875rem;
+    color: #4a5568;
+}
+
+/* Position controls below content */
+.featured-carousel .slds-carousel__stage {
+    padding-bottom: 2.5rem; /* Space for controls */
+}
+
+.featured-carousel .slds-carousel__autoplay {
+    position: absolute;
+    bottom: -2.5rem;
+    left: 1rem;
+    z-index: 2;
+}
+
+.featured-carousel .slds-carousel__indicators {
+    position: absolute;
+    bottom: -2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0;
+    background: transparent;
+    width: auto;
+}
+
+.featured-carousel .slds-carousel__indicator-action {
+    width: 8px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 50%;
+    border: none;
+    margin: 0 2px;
+    padding: 0;
+}
+
+.featured-carousel .slds-carousel__indicator-action.slds-is-active {
+    background: #3182ce;
+    width: 10px;
+    height: 10px;
+}
+
+/* Keep controls visible */
+.featured-carousel .slds-carousel__panels-container {
+    overflow: visible;
+}
+
+.featured-carousel .slds-carousel__panels {
+    overflow: visible;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    .featured-listings,
+    .search-results {
+        width: 95%;
+    }
+    
+    .search-section {
+        width: 95%;
+    }
+    
+    .hero-section {
+        padding: 3rem 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .featured-listings,
+    .search-results {
+        padding: 0 0.5rem;
+    }
+    
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 1.75rem;
+    }
+}
